@@ -9,8 +9,8 @@ const App = () => {
   // const [mostrar, setMostrar] = useState(true);
   return (
     <div>
-      {/* <Contador></Contador> */}
-      {/* <ListadoEsculturas></ListadoEsculturas> */}
+      <Contador></Contador>
+      <ListadoEsculturas></ListadoEsculturas>
       <ListadoTareas></ListadoTareas>
       {/* <Button
         variant={mostrar ? "danger" : "primary"}

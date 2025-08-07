@@ -1,37 +1,63 @@
 import React, { useEffect, useState } from "react";
-import { Button, ListGroup, Spinner } from "react-bootstrap";
+import { Button, ListGroup } from "react-bootstrap";
 import {
   guardarEnLocalStorage,
   obtenerDeLocalStorage,
 } from "../utils/localStorage.util";
+import loquesea from "../assets/imagen1.jpg";
+import ItemTarea from "./ItemTarea";
 
 const ListadoTareas = () => {
   const [listadoTareas, setListadoTareas] = useState([]);
   const [tarea, setTarea] = useState("");
-
-  function handleSubmit(e) {
-    e.preventDefault();
-    setListadoTareas([...listadoTareas, tarea]);
-    // limpiar el formulario
-    setTarea("");
-  }
+  const [editandoIndex, setEditandoIndex] = useState(null);
+  const [tareaModificada, setTareaModificada] = useState("");
 
   useEffect(() => {
     const tareasGuardadas = obtenerDeLocalStorage("listadoTareas");
-    console.log(tareasGuardadas);
     setListadoTareas(tareasGuardadas);
   }, []);
 
   useEffect(() => {
     // Código que se ejecuta al montar o actualizar
-    console.log("Componente cargado");
     guardarEnLocalStorage("listadoTareas", listadoTareas);
     //codigo que se ejecuta al desmontar
   }, [listadoTareas]);
 
+  function handleSubmit(e) {
+    e.preventDefault();
+    if (tarea != "") {
+      setListadoTareas([...listadoTareas, tarea]);
+      // limpiar el formulario
+      setTarea("");
+    } else {
+      alert("Debe escribir algo");
+    }
+  }
+
+  function handleDelete(tarea, indiceAEleminiar) {
+    if (confirm(`Segudo que desea eliminar esta tarea? ${tarea}`)) {
+      const nuevoListadoTareas = listadoTareas.filter(
+        (item, index) => index != indiceAEleminiar
+      );
+      setListadoTareas(nuevoListadoTareas);
+    }
+  }
+  function handleUpdate(indiceAEditar) {
+    // crear nuevo array
+    const nuevoArray = [...listadoTareas];
+    // de ese Array, acceder al elemento que quiero modificar y asignarle un nuevo valor
+    nuevoArray[indiceAEditar] = tareaModificada;
+    // guardar el nuevo arrary en el listado de tareas
+    setListadoTareas(nuevoArray);
+    setEditandoIndex(null);
+    setTareaModificada("");
+  }
+
   return (
     <div className="container mt-2">
       <h1>Listado de tareas</h1>
+      <img src={loquesea} alt="imagen de prueba" />
       {/* <Spinner animation="border" variant="primary" /> */}
       <form onSubmit={handleSubmit} className="d-flex w-50 ">
         <input
@@ -49,17 +75,27 @@ const ListadoTareas = () => {
         </Button>
       </form>
       <h3>Listado</h3>
-      <ListGroup>
-        {" "}
-        {/* Mostrar el listado de tareas */}
-        {listadoTareas.map((item, indice) => {
-          return (
-            <ListGroup.Item variant="primary" key={indice}>
-              {item}
-            </ListGroup.Item>
-          );
-        })}
-      </ListGroup>
+      {listadoTareas.length == 0 ? (
+        <p>No tiene ninguna tarea pendiente. Puede dormir siesta 😎</p>
+      ) : (
+        <ListGroup>
+          {listadoTareas.map((tarea, indice) => {
+            return (
+              <ItemTarea
+                key={indice}
+                indice={indice}
+                tarea={tarea}
+                editandoIndex={editandoIndex}
+                setEditandoIndex={setEditandoIndex}
+                setTareaModificada={setTareaModificada}
+                handleDelete={handleDelete}
+                handleUpdate={handleUpdate}
+                tareaModificada={tareaModificada}
+              ></ItemTarea>
+            );
+          })}
+        </ListGroup>
+      )}
     </div>
   );
 };
