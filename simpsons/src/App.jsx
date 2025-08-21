@@ -3,17 +3,11 @@ import Header from "./components/Header";
 import Footer from "./components/Footer";
 import LogoNav from "./assets/imagenesSimpsons/logo.png";
 import HomePage from "./pages/HomePage";
+import AppRouter from "./routes/AppRouter";
+import "sweetalert2/dist/sweetalert2.min.css";
 
 const App = () => {
-  return (
-    <div className="d-flex flex-column border-2 alturaMinimaContenedor">
-      <Header></Header>
-      <main>
-        <HomePage></HomePage>
-      </main>
-      <Footer logoSrc={LogoNav}></Footer>
-    </div>
-  );
+  return <AppRouter></AppRouter>;
 };
 
 export default App;

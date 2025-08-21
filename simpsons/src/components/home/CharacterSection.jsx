@@ -22,7 +22,7 @@ const CharacterSection = () => {
   // cuando tenga los datos los guardo en mi estado de useState
   console.log(listadoPersonajes);
   return (
-    <div className="border border-danger">
+    <div className="container-fluid">
       <h2>Listado de personajes</h2>
       <Row xs={1} md={2} lg={4} className="g-4">
         {listadoPersonajes.map((personaje, indice) => (

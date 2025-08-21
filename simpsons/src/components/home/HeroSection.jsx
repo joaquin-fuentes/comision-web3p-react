@@ -2,7 +2,7 @@ import React from "react";
 import heroImg from "../../assets/imagenesSimpsons/hero.png";
 const HeroSection = () => {
   return (
-    <div className="container-fluid alturaMinima bg-danger hero d-flex justify-content-center align-items-center">
+    <div className="container-fluid alturaMinima hero d-flex justify-content-center align-items-center">
       <img src={heroImg} alt="" />
     </div>
   );
