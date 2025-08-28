@@ -1,7 +1,9 @@
-import React from "react";
+import UsersTable from "../components/admin/UsersTable";
 
-const AdminPage = () => {
-  return <div>AdminPage</div>;
-};
-
-export default AdminPage;
+export default function AdminPage() {
+  return (
+    <div className="container py-4">
+      <UsersTable />
+    </div>
+  );
+}

@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Presentación de Grupos</title>
+    <style>
+      :root {
+        --bg-a: #0b1020;
+        --bg-b: #101833;
+        --bg-c: #0c1227;
+        --card: rgba(255, 255, 255, 0.06);
+        --stroke: rgba(255, 255, 255, 0.18);
+        --txt: #e9eefc;
+        --muted: #b9c3e6;
+        --acc1: #00d4ff;
+        --acc2: #7a5cff;
+        --acc3: #19ffa9;
+      }
+
+      /* Fondo animado */
+      body {
+        margin: 0;
+        color: var(--txt);
+        background: radial-gradient(
+            1200px 600px at 10% 10%,
+            #1a2b6b40 0%,
+            transparent 60%
+          ),
+          radial-gradient(
+            1000px 800px at 90% 20%,
+            #1d6b8040 0%,
+            transparent 60%
+          ),
+          linear-gradient(120deg, var(--bg-a), var(--bg-b), var(--bg-c));
+        background-size: 200% 200%;
+        animation: bgShift 24s ease-in-out infinite;
+        font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto,
+          "Helvetica Neue", Arial;
+        min-height: 100svh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      @keyframes bgShift {
+        0%,
+        100% {
+          background-position: 0% 0%;
+        }
+        50% {
+          background-position: 100% 100%;
+        }
+      }
+
+      .wrap {
+        width: min(1100px, 92vw);
+        padding: clamp(16px, 2vw, 28px);
+      }
+
+      header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 22px;
+      }
+
+      .title {
+        font-size: clamp(28px, 5vw, 48px);
+        line-height: 1.1;
+        font-weight: 800;
+        letter-spacing: 0.2px;
+        background: linear-gradient(90deg, #ffffff, #c7d5ff);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        text-shadow: 0 0 18px #6ad5ff22;
+      }
+
+      .controls {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+      button {
+        appearance: none;
+        border: 1px solid var(--stroke);
+        background: linear-gradient(180deg, #ffffff14, #ffffff08);
+        color: var(--txt);
+        padding: 10px 14px;
+        border-radius: 14px;
+        cursor: pointer;
+        font-weight: 700;
+        letter-spacing: 0.3px;
+        transition: transform 0.15s ease, box-shadow 0.15s ease,
+          border-color 0.2s ease;
+        backdrop-filter: blur(6px);
+        box-shadow: 0 8px 24px rgba(17, 30, 70, 0.24);
+      }
+      button:hover {
+        transform: translateY(-1px);
+        border-color: #ffffff44;
+      }
+      button:active {
+        transform: translateY(0);
+      }
+
+      .grid {
+        display: grid;
+        gap: 18px;
+        grid-template-columns: 1fr;
+      }
+
+      .card {
+        border: 1px solid var(--stroke);
+        background: linear-gradient(180deg, #ffffff12, #ffffff08);
+        border-radius: 22px;
+        padding: clamp(16px, 2.4vw, 24px);
+        box-shadow: 0 20px 40px rgba(8, 12, 30, 0.35);
+        backdrop-filter: blur(10px);
+        transform-origin: 50% 50%;
+        opacity: 0;
+        transform: translateY(8px) scale(0.985);
+      }
+      .card.visible {
+        animation: popIn 0.7s cubic-bezier(0.2, 0.9, 0.2, 1) forwards;
+      }
+      @keyframes popIn {
+        to {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+      }
+
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 900;
+        letter-spacing: 0.6px;
+        text-transform: uppercase;
+        font-size: clamp(14px, 1.6vw, 16px);
+        color: var(--muted);
+        margin-bottom: 10px;
+      }
+      .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 999px;
+        background: conic-gradient(
+          from 0deg,
+          var(--acc1),
+          var(--acc2),
+          var(--acc3),
+          var(--acc1)
+        );
+        box-shadow: 0 0 24px #3ec2ff66;
+      }
+
+      .groupTitle {
+        font-size: clamp(22px, 3.6vw, 34px);
+        font-weight: 900;
+        line-height: 1.1;
+        margin: 6px 0 14px 0;
+        background: linear-gradient(90deg, #9ad8ff, #d7b0ff 50%, #9affe0 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        text-shadow: 0 0 20px #7bd9ff26;
+      }
+
+      .members {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+      .member {
+        font-size: clamp(18px, 2.4vw, 26px);
+        line-height: 1;
+        padding: 14px 18px;
+        border-radius: 16px;
+        border: 1px solid #ffffff24;
+        background: linear-gradient(180deg, #ffffff1a, #ffffff10);
+        backdrop-filter: blur(6px);
+        box-shadow: 0 8px 20px rgba(8, 12, 30, 0.28);
+        opacity: 0;
+        transform: translateY(8px) scale(0.98);
+        position: relative;
+        overflow: hidden;
+      }
+      .member.show {
+        animation: nameIn 0.5s cubic-bezier(0.2, 0.9, 0.2, 1) forwards,
+          glow 1.6s ease 0s 1;
+      }
+      @keyframes nameIn {
+        to {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+      }
+      @keyframes glow {
+        0% {
+          box-shadow: 0 0 0 rgba(60, 200, 255, 0);
+        }
+        40% {
+          box-shadow: 0 0 32px rgba(60, 200, 255, 0.55);
+        }
+        100% {
+          box-shadow: 0 8px 20px rgba(8, 12, 30, 0.28);
+        }
+      }
+      .member::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        background: conic-gradient(
+          from 0deg,
+          #8fe8ff33,
+          #bca2ff33,
+          #7affd633,
+          #8fe8ff33
+        );
+        mask: radial-gradient(150px 50px at 10% 0%, #000, transparent 60%);
+        opacity: 0;
+        transition: opacity 0.4s ease;
+      }
+      .member.show::after {
+        opacity: 0.4;
+      }
+
+      /* Overlay de cuenta regresiva */
+      .overlay {
+        position: fixed;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        background: radial-gradient(
+            1200px 600px at 20% 20%,
+            #2a56ff22,
+            transparent 60%
+          ),
+          linear-gradient(120deg, #060912ee, #0a0f1bee);
+        z-index: 30;
+      }
+      .overlay.hidden {
+        display: none;
+      }
+      .ov-card {
+        width: min(760px, 92vw);
+        border: 1px solid var(--stroke);
+        border-radius: 26px;
+        padding: 32px 24px;
+        background: linear-gradient(180deg, #ffffff10, #ffffff06);
+        box-shadow: 0 30px 80px rgba(0, 0, 0, 0.55);
+        text-align: center;
+      }
+      .ov-title {
+        font-size: clamp(28px, 5.2vw, 46px);
+        font-weight: 900;
+        margin: 0 0 6px 0;
+        background: linear-gradient(90deg, #9ad8ff, #d7b0ff, #9affe0);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+      .ov-sub {
+        color: var(--muted);
+        margin: 0 0 18px 0;
+        font-size: clamp(14px, 2.6vw, 18px);
+      }
+      .count {
+        font-size: clamp(46px, 10vw, 84px);
+        font-weight: 900;
+        letter-spacing: 1px;
+        text-shadow: 0 0 22px #56d6ff44;
+        margin: 8px 0 14px 0;
+      }
+      .bar {
+        height: 10px;
+        width: 100%;
+        border-radius: 999px;
+        overflow: hidden;
+        background: #ffffff14;
+        border: 1px solid #ffffff22;
+      }
+      /* Importante: la barra ya no anima sola */
+      .bar > span {
+        display: block;
+        height: 100%;
+        width: 0%;
+        background: linear-gradient(
+          90deg,
+          var(--acc1),
+          var(--acc2),
+          var(--acc3)
+        );
+        /* sin animation por defecto */
+      }
+
+      /* Respeto a "prefers-reduced-motion" */
+      @media (prefers-reduced-motion: reduce) {
+        * {
+          animation-duration: 0.001ms !important;
+          animation-iteration-count: 1 !important;
+          transition: none !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Overlay de inicio (no arranca solo) -->
+    <div id="overlay" class="overlay">
+      <div class="ov-card">
+        <h1 class="ov-title">Presentación de Grupos</h1>
+        <p class="ov-sub" id="ovSub">
+          Haz clic en “Comenzar” para iniciar la cuenta regresiva.
+        </p>
+        <div id="count" class="count" aria-live="polite">10</div>
+        <div class="bar" aria-hidden="true"><span id="barFill"></span></div>
+        <div style="margin-top: 16px" class="controls">
+          <button id="startCountdown" title="Comenzar cuenta regresiva">
+            Comenzar
+          </button>
+          <button id="startNow" title="Iniciar ahora">Iniciar ahora</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="wrap" aria-live="polite" aria-atomic="false">
+      <header>
+        <h2 class="title">Presentación de Grupos</h2>
+        <div class="controls">
+          <button id="restartBtn" title="Reiniciar presentación">
+            Reiniciar
+          </button>
+        </div>
+      </header>
+
+      <div id="grid" class="grid">
+        <!-- Las tarjetas de grupos se inyectan por JS -->
+      </div>
+    </div>
+
+    <script>
+      /* ================== CONFIGURACIÓN ================== */
+      const grupos = [
+        {
+          id: 1,
+          titulo: "Grupo 1",
+          integrantes: [
+            "Amelia",
+            "Sara",
+            "Felipe",
+            "Sergio",
+            "Melisa",
+            "Facundo mamani",
+          ],
+        },
+        {
+          id: 2,
+          titulo: "Grupo 2",
+          integrantes: [
+            "lautaro",
+            "Matias",
+            "Pablo",
+            "Nadia",
+            "Mauricio Nicolas",
+            "Paula rodriguez",
+          ],
+        },
+        {
+          id: 3,
+          titulo: "Grupo 3",
+          integrantes: ["Leandro", "Luciano", "Mario", "Alvaro", "Isaias"],
+        },
+      ];
+
+      const INICIO_AUTOMATICO_MS = 10000; // 10s
+      const RETARDO_ENTRE_GRUPOS_MS = 2000;
+      const RETARDO_ENTRE_NOMBRES_MS = 1500;
+
+      /* ================== UTILIDADES ================== */
+      const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+      function crearCardGrupo(grupo) {
+        const card = document.createElement("section");
+        card.className = "card";
+        card.dataset.grupo = grupo.id;
+        card.innerHTML = `
+          <div class="badge"><span class="dot"></span> Presentación</div>
+          <h3 class="groupTitle">${grupo.titulo}</h3>
+          <ul class="members" aria-label="Integrantes"></ul>
+        `;
+        return card;
+      }
+
+      function crearItemNombre(nombre) {
+        const li = document.createElement("li");
+        li.className = "member";
+        li.textContent = nombre;
+        return li;
+      }
+
+      /* ================== PRESENTACIÓN ================== */
+      let ejecutando = false;
+      let detener = false;
+
+      async function presentar() {
+        if (ejecutando) return;
+        ejecutando = true;
+        detener = false;
+
+        const grid = document.getElementById("grid");
+        grid.innerHTML = "";
+
+        for (const g of grupos) {
+          if (detener) break;
+
+          const card = crearCardGrupo(g);
+          grid.appendChild(card);
+          void card.offsetWidth;
+          card.classList.add("visible");
+
+          const ul = card.querySelector(".members");
+          for (const nombre of g.integrantes) {
+            if (detener) break;
+            await sleep(RETARDO_ENTRE_NOMBRES_MS);
+            const item = crearItemNombre(nombre);
+            ul.appendChild(item);
+            void item.offsetWidth;
+            item.classList.add("show");
+          }
+
+          await sleep(RETARDO_ENTRE_GRUPOS_MS);
+        }
+
+        ejecutando = false;
+      }
+
+      /* ================== OVERLAY Y CONTROLES ================== */
+      const overlay = document.getElementById("overlay");
+      const counter = document.getElementById("count");
+      const ovSub = document.getElementById("ovSub");
+      const barFill = document.getElementById("barFill");
+
+      const startCountdownBtn = document.getElementById("startCountdown");
+      const startNowBtn = document.getElementById("startNow");
+      const restartBtn = document.getElementById("restartBtn");
+
+      let countdownIv = null;
+      let autoTimer = null;
+      let contando = false;
+
+      function resetBar() {
+        // Reinicia la animación de la barra
+        barFill.style.animation = "none";
+        barFill.style.width = "0%";
+        // Forzar reflow para poder volver a aplicar la animación
+        void barFill.offsetWidth;
+      }
+
+      function iniciarCuentaRegresiva(duracionMs = INICIO_AUTOMATICO_MS) {
+        // Evitar múltiples inicios
+        if (contando) return;
+        contando = true;
+
+        // Texto y contador
+        ovSub.textContent = "La presentación comenzará automáticamente en…";
+        let restante = Math.ceil(duracionMs / 1000);
+        counter.textContent = restante;
+
+        // Barra
+        resetBar();
+        barFill.style.animation = `progress ${duracionMs}ms linear forwards`;
+
+        // Intervalo de cuenta
+        countdownIv = setInterval(() => {
+          restante--;
+          counter.textContent = Math.max(restante, 0);
+          if (restante <= 0) {
+            clearInterval(countdownIv);
+            countdownIv = null;
+          }
+        }, 1000);
+
+        // Cuando termina, arrancamos
+        autoTimer = setTimeout(() => {
+          iniciarPresentacion();
+        }, duracionMs);
+
+        // Mientras corre la cuenta, “Comenzar” queda deshabilitado
+        startCountdownBtn.disabled = true;
+      }
+
+      function limpiarTimers() {
+        if (countdownIv) clearInterval(countdownIv);
+        if (autoTimer) clearTimeout(autoTimer);
+        countdownIv = null;
+        autoTimer = null;
+        contando = false;
+      }
+
+      function iniciarPresentacion() {
+        limpiarTimers();
+        overlay.classList.add("hidden");
+        presentar();
+        // re-habilitar por si se vuelve al overlay luego
+        startCountdownBtn.disabled = false;
+      }
+
+      // Botones
+      startCountdownBtn.addEventListener("click", () =>
+        iniciarCuentaRegresiva()
+      );
+      startNowBtn.addEventListener("click", iniciarPresentacion);
+
+      // Reiniciar: vuelve al overlay y espera clic en “Comenzar”
+      restartBtn.addEventListener("click", () => {
+        detener = true;
+        limpiarTimers();
+        resetBar();
+        counter.textContent = Math.ceil(INICIO_AUTOMATICO_MS / 1000);
+        ovSub.textContent =
+          "Haz clic en “Comenzar” para iniciar la cuenta regresiva.";
+        overlay.classList.remove("hidden");
+      });
+
+      // Accesos rápidos: R para reiniciar, Enter para comenzar cuenta (si overlay visible)
+      document.addEventListener("keydown", (e) => {
+        if (e.key.toLowerCase() === "r") restartBtn.click();
+        if (e.key === "Enter" && !overlay.classList.contains("hidden")) {
+          startCountdownBtn.click();
+        }
+      });
+
+      // Al cargar: overlay visible, sin animaciones ni timers activos.
+      resetBar();
+      counter.textContent = Math.ceil(INICIO_AUTOMATICO_MS / 1000);
+    </script>
+  </body>
+</html>

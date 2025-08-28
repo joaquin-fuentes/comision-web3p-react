@@ -57,6 +57,11 @@ function BasicExample() {
         password: data.password,
         createdAt: new Date().toISOString(),
       };
+      if (data.email === "joaquin.fuentes@gmail.com") {
+        nuevoUsuario.rol === "Admin";
+      } else {
+        nuevoUsuario.rol === "Visitante";
+      }
       const usuariosDelLocalStorage = obtenerUsuariosDeLocalStorage();
       //  preguntar si alguno de los usuarios de localstorage tiene el mismo email
       // que el nuevo usuario que estoy creando , si esto parseAst, mostrar un mensaje de error

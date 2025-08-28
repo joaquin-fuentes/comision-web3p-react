@@ -5,7 +5,7 @@ const AdminRoute = () => {
 
   const user = JSON.parse(sessionStorage.getItem("usuario")) || null;
   console.log(user);
-  if (user) {
+  if (user.rol === "admin") {
     return <Outlet />;
   } else {
     return <Navigate to="/login" />;

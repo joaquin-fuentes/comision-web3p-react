@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1"
+    />
+    <title>Demo: Toggle de Tema (Claro/Oscuro)</title>
+
+    <!-- Evita “flash” de tema equivocado: fija el tema ANTES de pintar -->
+    <script>
+      (function () {
+        const saved = localStorage.getItem("theme");
+        const prefersDark = window.matchMedia &&
+          window.matchMedia("(prefers-color-scheme: dark)").matches;
+        const initial = saved || (prefersDark ? "dark" : "light");
+        document.documentElement.setAttribute("data-theme", initial);
+        // ayuda a inputs nativos/scrollbars
+        document.documentElement.style.colorScheme = initial;
+      })();
+    </script>
+
+    <style>
+      /* ====== Sistema de temas con custom properties ====== */
+      :root {
+        /* Light (por defecto) */
+        --bg: #f7f8fb;
+        --surface: #ffffff;
+        --txt: #0f1222;
+        --muted: #4b5567;
+        --border: #e6e8ef;
+        --accent: #3b82f6;
+        --accent-contrast: #ffffff;
+
+        --radius: 16px;
+        --shadow: 0 10px 30px rgba(15, 18, 34, 0.08);
+      }
+
+      /* Overrides para modo oscuro */
+      [data-theme="dark"] {
+        --bg: #0b1020;
+        --surface: #111735;
+        --txt: #e9eefc;
+        --muted: #b7c2e2;
+        --border: #1e2647;
+        --accent: #60a5fa;
+        --accent-contrast: #0b1020;
+
+        --shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+      }
+
+      /* Habilita los estilos nativos según el tema actual */
+      :root {
+        color-scheme: light dark;
+      }
+
+      /* ====== Base ====== */
+      * { box-sizing: border-box; }
+      html, body {
+        height: 100%;
+      }
+      body {
+        margin: 0;
+        font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial;
+        background: var(--bg);
+        color: var(--txt);
+        transition: background-color 200ms ease, color 200ms ease;
+      }
+
+      .wrap {
+        max-width: 980px;
+        margin: 0 auto;
+        padding: clamp(16px, 3vw, 28px);
+      }
+
+      header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 22px;
+      }
+
+      .title {
+        font-size: clamp(22px, 3.4vw, 36px);
+        font-weight: 800;
+        letter-spacing: 0.3px;
+      }
+
+      .controls {
+        display: flex;
+        gap: 10px;
+      }
+
+      button.toggle {
+        appearance: none;
+        border: 1px solid var(--border);
+        background: var(--surface);
+        color: var(--txt);
+        padding: 10px 14px;
+        border-radius: 999px;
+        font-weight: 700;
+        letter-spacing: 0.2px;
+        cursor: pointer;
+        box-shadow: var(--shadow);
+        transition: transform 0.12s ease, box-shadow 0.12s ease, border-color 0.15s ease, background-color 0.15s ease;
+      }
+      button.toggle:hover { transform: translateY(-1px); }
+      button.toggle:active { transform: translateY(0); }
+
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 10px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--accent-contrast);
+        background: var(--accent);
+        border: 1px solid color-mix(in oklab, var(--accent), black 10%);
+        box-shadow: var(--shadow);
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+
+      .card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        padding: clamp(14px, 2.2vw, 20px);
+      }
+
+      .card h3 {
+        margin: 0 0 6px 0;
+        font-size: 18px;
+      }
+      .card p {
+        margin: 0;
+        color: var(--muted);
+      }
+
+      a.btn {
+        display: inline-block;
+        margin-top: 12px;
+        text-decoration: none;
+        background: var(--accent);
+        color: var(--accent-contrast);
+        padding: 10px 14px;
+        border-radius: 12px;
+        border: 1px solid color-mix(in oklab, var(--accent), black 15%);
+        box-shadow: var(--shadow);
+      }
+
+      /* Respeto a reduced motion */
+      @media (prefers-reduced-motion: reduce) {
+        * { transition: none !important; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header>
+        <h1 class="title">Demo de Tema: Claro / Oscuro</h1>
+        <div class="controls">
+          <button
+            id="themeToggle"
+            class="toggle"
+            type="button"
+            aria-pressed="false"
+            aria-label="Cambiar a modo oscuro"
+            title="Cambiar tema"
+          >
+            🌙 Oscuro
+          </button>
+        </div>
+      </header>
+
+      <span class="badge">UI de ejemplo</span>
+
+      <div class="grid" style="margin-top: 14px">
+        <section class="card">
+          <h3>Tarjeta 1</h3>
+          <p>Este bloque usa variables CSS para colores, bordes y sombras.</p>
+          <a class="btn" href="#" onclick="event.preventDefault()">Acción</a>
+        </section>
+        <section class="card">
+          <h3>Tarjeta 2</h3>
+          <p>Probá el botón de arriba y fijate cómo cambia todo el esquema.</p>
+        </section>
+      </div>
+    </div>
+
+    <script>
+      (function () {
+        const btn = document.getElementById("themeToggle");
+
+        const getTheme = () =>
+          document.documentElement.getAttribute("data-theme") || "light";
+
+        const setTheme = (theme) => {
+          document.documentElement.setAttribute("data-theme", theme);
+          document.documentElement.style.colorScheme = theme;
+          localStorage.setItem("theme", theme);
+
+          // Accesibilidad + texto/icono del botón
+          const isDark = theme === "dark";
+          btn.setAttribute("aria-pressed", String(isDark));
+          btn.setAttribute(
+            "aria-label",
+            isDark ? "Cambiar a modo claro" : "Cambiar a modo oscuro"
+          );
+          btn.textContent = isDark ? "☀️ Claro" : "🌙 Oscuro";
+        };
+
+        // Aplica estado inicial a los controles (según lo que fijamos en <head>)
+        setTheme(getTheme());
+
+        btn.addEventListener("click", () => {
+          const next = getTheme() === "dark" ? "light" : "dark";
+          setTheme(next);
+        });
+
+        // (Opcional) Si querés responder a cambios del sistema *cuando el usuario no eligió manualmente*,
+        // podrías escuchar matchMedia y solo actuar si no hay `localStorage.getItem('theme')`.
+        // Lo dejo comentado para simplicidad.
+        /*
+        const mq = window.matchMedia("(prefers-color-scheme: dark)");
+        mq.addEventListener("change", (e) => {
+          if (!localStorage.getItem("theme")) {
+            setTheme(e.matches ? "dark" : "light");
+          }
+        });
+        */
+      })();
+    </script>
+  </body>
+</html>
