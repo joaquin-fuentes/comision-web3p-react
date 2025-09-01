@@ -9,7 +9,7 @@ function BasicExample() {
     register,
     handleSubmit,
     reset,
-    formState: { errors, isSubmitting },
+    formState: { errors },
   } = useForm({
     mode: "onChange",
     defaultValues: {
