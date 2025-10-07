@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { Button, ListGroup } from "react-bootstrap";
-import {
-  guardarEnLocalStorage,
-  obtenerDeLocalStorage,
-} from "../utils/localStorage.util";
-import loquesea from "../assets/imagen1.jpg";
+import { Button, FormControl, ListGroup } from "react-bootstrap";
+import { guardarEnLocalStorage } from "../utils/localStorage.util";
+// import loquesea from "../assets/imagen1.jpg";
 import ItemTarea from "./ItemTarea";
+import clientAxios from "../api/clientAxios.js";
 
 const ListadoTareas = () => {
   const [listadoTareas, setListadoTareas] = useState([]);
@@ -13,9 +11,24 @@ const ListadoTareas = () => {
   const [editandoIndex, setEditandoIndex] = useState(null);
   const [tareaModificada, setTareaModificada] = useState("");
 
+  const API_URL = "http://localhost:3000/api/tareas";
+
   useEffect(() => {
-    const tareasGuardadas = obtenerDeLocalStorage("listadoTareas");
-    setListadoTareas(tareasGuardadas);
+    // const tareasGuardadas = obtenerDeLocalStorage("listadoTareas");
+    // acceder al endpoint del backend de tareas y obtener las tareas
+    async function fetchTareas() {
+      try {
+        // const respuesta = await fetch(API_URL);
+        const respuesta = await clientAxios.get("/tareas");
+        // const data = await respuesta.json();
+        console.log(respuesta);
+        setListadoTareas(respuesta.data.tareas);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
+    fetchTareas();
   }, []);
 
   useEffect(() => {
@@ -57,7 +70,7 @@ const ListadoTareas = () => {
   return (
     <div className="container mt-2">
       <h1>Listado de tareas</h1>
-      <img src={loquesea} alt="imagen de prueba" />
+      {/* <img src={loquesea} alt="imagen de prueba" /> */}
       {/* <Spinner animation="border" variant="primary" /> */}
       <form onSubmit={handleSubmit} className="d-flex w-50 ">
         <input
@@ -83,8 +96,8 @@ const ListadoTareas = () => {
             return (
               <ItemTarea
                 key={indice}
-                indice={indice}
-                tarea={tarea}
+                indice={tarea._id}
+                tarea={tarea.descripcion}
                 editandoIndex={editandoIndex}
                 setEditandoIndex={setEditandoIndex}
                 setTareaModificada={setTareaModificada}

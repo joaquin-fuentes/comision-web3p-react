@@ -35,10 +35,20 @@ const ListadoEsculturas = () => {
       <button
         onClick={handleNext}
         type="button"
-        class="btn btn-outline-primary"
+        style={{
+          padding: "8px 16px",
+          fontSize: "14px",
+          fontWeight: 500,
+          color: "#fff",
+          backgroundColor: "#0d6efd",
+          border: "1px solid #0d6efd",
+          borderRadius: "6px",
+          cursor: "pointer",
+        }}
       >
         Siguiente
       </button>
+
       <h2>
         <i>{name}</i> POR {artist}{" "}
       </h2>
