@@ -8,6 +8,7 @@ import AdminPage from "../pages/AdminPage";
 import Error404Page from "../pages/Error404Page";
 import LayoutConNav from "../layouts/LayoutConNav";
 import UserRoute from "./UserRoute";
+import TasksPage from "../pages/TasksPage.jsx";
 
 const AppRouter = () => {
   return (
@@ -21,6 +22,7 @@ const AppRouter = () => {
             element={<FavoritesPage></FavoritesPage>}
           ></Route>
           <Route path="/admin" element={<AdminPage></AdminPage>}></Route>
+          <Route path="/tareas" element={<TasksPage></TasksPage>}></Route>
         </Route>
       </Route>
 
